@@ -3,18 +3,15 @@
 # Стабилизатор бивалютной корзины 50/50 v2
 # ========================================
 
-require 'net/http'
-require 'uri'
-require 'rexml/document'
 require_relative 'lib/stabilizer'
 
 VALUTES = {'Евро' => 'R01239', 'Доллар США' => 'R01235'}
 
-uri = URI.parse("http://www.cbr.ru/scripts/XML_daily.asp")
+url = "http://www.cbr.ru/scripts/XML_daily.asp"
 
-response = Net::HTTP.get_response(uri)
+parser = CourseParser.parse_xml_by_url(url)
 
-doc = REXML::Document.new(response.body)
+puts doc.class
 
 # Просит пользователя выбрать валюту
 puts 'Выберите, пожалуйста, номер валюты в списке: '

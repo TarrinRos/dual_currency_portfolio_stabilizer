@@ -1,0 +1,16 @@
+<ValCurs Date="03.11.2018" name="Foreign Currency Market">
+  <Valute ID="R01235">
+    <NumCode>840</NumCode>
+    <CharCode>USD</CharCode>
+    <Nominal>1</Nominal>
+    <Name>Доллар США</Name>
+    <Value>65,5799</Value>
+  </Valute>
+  <Valute ID="R01239">
+    <NumCode>978</NumCode>
+    <CharCode>EUR</CharCode>
+    <Nominal>1</Nominal>
+    <Name>Евро</Name>
+    <Value>74,9906</Value>
+  </Valute>
+</ValCurs>
