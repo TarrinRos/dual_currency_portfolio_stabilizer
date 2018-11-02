@@ -3,26 +3,24 @@ require 'uri'
 require 'rexml/document'
 
 class CourseParser
-  attr_reader :course
+  attr_reader :node
 
   def self.parse_xml_by_url(url)
     uri = URI.parse(url)
 
     response = Net::HTTP.get_response(uri)
 
-    doc = REXML::Document.new(response.body).elements['ValCurs']
+    doc = REXML::Document.new(response.body)
     new(doc)
   end
 
   def initialize(doc)
-    @course = get_course(doc)
+    @node = get_node(doc)
   end
 
   private
 
-  def get_course(doc)
-    doc.each_element_with_attribute( 'ID', 'R01235' ) do |e|
-      e.elements['Value']
-    end
+  def get_node(doc)
+    doc.elements['ValCurs']
   end
 end

@@ -7,16 +7,8 @@ describe CourseParser do
   let(:doc) {CourseParser.parse_xml_by_url("http://www.cbr.ru/scripts/XML_daily.asp")}
 
   describe '.parse_xml_by_url' do
-    it 'returns parsed xml doc' do
+    it 'returns parsed xml document' do
       expect(doc).to be_an_instance_of(CourseParser)
-    end
-  end
-
-  describe '#initialize' do
-    let(:doc) {REXML::Document.new("fixtures/currency.xml")}
-    it 'returns course of selected currency' do
-      parser = CourseParser.new(doc)
-      expect(parser.course).to_eq 65,5799
     end
   end
 end

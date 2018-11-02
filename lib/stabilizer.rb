@@ -2,9 +2,10 @@ class Stabilizer
   attr_reader :result, :course, :currency, :rub
 
   def initialize(params)
-    @course = params[:course]
-    @currency = params[:currency]
-    @rub = params[:rub]
+    @course = params['course']
+    @currency = params['currency']
+    @rub = params['rub']
+    @valute_symbol = params['symbol']
 
     @result = count_buy_sell
   end
@@ -23,11 +24,11 @@ class Stabilizer
 
       # Если рублей меньше, чем долларов - продать
     elsif rub_to_currency < @currency
-      "Вам нужно продать: $ #{buy_sell.round(2).to_s}"
+      "Вам нужно продать: #{@valute_symbol} #{buy_sell.round(2).to_s}"
 
       # Если рублей больше, чем долларов - докупить
     else
-      "Вам нужно докупить: $ #{buy_sell.round(2).abs.to_s}"
+      "Вам нужно докупить: #{@valute_symbol} #{buy_sell.round(2).abs.to_s}"
     end
   end
 end
