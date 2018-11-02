@@ -15,7 +15,8 @@ describe CourseParser do
   describe '#initialize' do
     let(:doc) {REXML::Document.new("fixtures/currency.xml")}
     it 'returns course of selected currency' do
-      expect(doc.course).to_eq
+      parser = CourseParser.new(doc)
+      expect(parser.course).to_eq 65,5799
     end
   end
 end
