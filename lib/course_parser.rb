@@ -11,17 +11,11 @@ class CourseParser
 
     response = Net::HTTP.get_response(uri)
 
-    node = REXML::Document.new(response.body).elements['ValCurs']
-
-    node
+    REXML::Document.new(response.body).elements['ValCurs']
   end
 
   def self.return_valutes_list
     VALUTES.keys.sort
-  end
-
-  def self.return_valutes_symbol(selected_valute)
-    VALUTES_SYMBOL[selected_valute]
   end
 
   def self.return_current_course(selected_valute)
@@ -32,5 +26,9 @@ class CourseParser
       @course = e.elements['Value'].text.gsub(/,/, '.').to_f
     end
     @course
+  end
+
+  def self.return_valutes_symbol(selected_valute)
+    VALUTES_SYMBOL[selected_valute]
   end
 end
