@@ -20,12 +20,17 @@ class CourseParser
     VALUTES.keys.sort
   end
 
+  def self.return_valutes_symbol(selected_valute)
+    VALUTES_SYMBOL[selected_valute]
+  end
+
   def self.return_current_course(selected_valute)
     node = self.parse_xml_by_url
 
+    # Проходит по ноде курсов и и возвращает курс, введенной пользователем валюты
     node.each_element_with_attribute('ID', "#{VALUTES[selected_valute]}") do |e|
       @course = e.elements['Value'].text.gsub(/,/, '.').to_f
     end
-    "Текущий курс: #{@course} зв 1 #{selected_valute}"
+    @course
   end
 end
