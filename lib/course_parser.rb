@@ -3,24 +3,29 @@ require 'uri'
 require 'rexml/document'
 
 class CourseParser
-  attr_reader :node
+  VALUTES = {'Евро' => 'R01239', 'Доллар США' => 'R01235'}
+  VALUTES_SYMBOL = {'Евро' => '€', 'Доллар США' => '$'}
 
-  def self.parse_xml_by_url(url)
-    uri = URI.parse(url)
+  def self.parse_xml_by_url
+    uri = URI.parse("http://www.cbr.ru/scripts/XML_daily.asp")
 
     response = Net::HTTP.get_response(uri)
 
-    doc = REXML::Document.new(response.body)
-    new(doc)
+    node = REXML::Document.new(response.body).elements['ValCurs']
+
+    node
   end
 
-  def initialize(doc)
-    @node = get_node(doc)
+  def self.return_valutes_list
+    VALUTES.keys.sort
   end
 
-  private
+  def self.return_current_course(selected_valute)
+    node = self.parse_xml_by_url
 
-  def get_node(doc)
-    doc.elements['ValCurs']
+    node.each_element_with_attribute('ID', "#{VALUTES[selected_valute]}") do |e|
+      @course = e.elements['Value'].text.gsub(/,/, '.').to_f
+    end
+    "Текущий курс: #{@course} зв 1 #{selected_valute}"
   end
 end
