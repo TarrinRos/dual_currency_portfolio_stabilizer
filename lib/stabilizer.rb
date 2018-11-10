@@ -1,11 +1,11 @@
 class Stabilizer
-  attr_reader :result, :course, :currency, :rub
+  attr_reader :result, :course, :currency, :rub, :amount
 
   def initialize(params)
-    @course = params['course']
-    @currency = params['currency']
-    @rub = params['rub']
-    @valute_symbol = params['symbol']
+    @course = params[:course]
+    @currency = params[:currency]
+    @rub = params[:rub]
+    @amount = 0
 
     @result = count_buy_sell
   end
@@ -15,20 +15,20 @@ class Stabilizer
     rub_to_currency = @rub / @course
 
     # Считает сколько нужно продать долларов для уравновешивания корзины
-    buy_sell = (rub_to_currency + @currency) / 2 - rub_to_currency
+    amount = (rub_to_currency + @currency) / 2 - rub_to_currency
 
     # Определяет какая часть корзины больше
-    # Если средств в корзинах одинаковое количество, или докупить/продать надо меньше 1 цента
-    if buy_sell.abs <= 0.01
-      'Ваша корзина и без того уравновешена.'
-
-      # Если рублей меньше, чем долларов - продать
+    if amount.abs <= 0.01
+      # Если средств в корзинах одинаковое количество, или докупить/продать надо меньше 1 цента
+      :balanced
     elsif rub_to_currency < @currency
-      "Вам нужно продать: #{@valute_symbol} #{buy_sell.round(2).to_s}"
-
-      # Если рублей больше, чем долларов - докупить
+      # Если рублей меньше, чем долларов - продать
+      @amount = amount.round(2).to_s
+      :sell
     else
-      "Вам нужно докупить: #{@valute_symbol} #{buy_sell.round(2).abs.to_s}"
+      # Если рублей больше, чем долларов - докупить
+      @amount = amount.round(2).abs.to_s
+      :buy
     end
   end
 end

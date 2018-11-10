@@ -7,46 +7,53 @@ require_relative 'lib/course_parser'
 require_relative 'lib/stabilizer'
 require 'rexml/document'
 
-portfolio_params = {'course' => 0, 'currency' => 0, 'rub' => 0, 'symbol' => nil}
+portfolio_params = {course: 0, currency: 0, rub: 0}
 
 # Просит пользователя выбрать валюту
 puts 'Выберите, пожалуйста, номер валюты в списке: '
 
 # Возвращает виды валюты списком
-valutes_list = CourseParser.return_valutes_list
+currency_list = CourseParser.return_valutes_list
 
-valutes_list.each_with_index {|valute, index| puts "#{index + 1}. #{valute}"}
+currency_list.each_with_index { |valute, index| puts "#{index + 1}. #{valute.upcase}" }
 
 users_choice = gets.to_i
 
-selected_valute = valutes_list[users_choice - 1]
+if users_choice.between?(1, currency_list.size)
+  selected_currency = currency_list[users_choice - 1]
 
-# Возвращает текущий курс по ЦБ РФ
-course =  CourseParser.return_current_course(selected_valute)
+  # Возвращает текущий курс по ЦБ РФ
+  course = CourseParser.return_current_course(selected_currency)
+else
+  abort "Валюты с таким порядковым номером в списке нет"
+end
 
-puts "Текущий курс: #{course} зв 1 #{selected_valute}"
+puts "Текущий курс: #{course} зв 1 #{selected_currency.upcase}"
 
 # Спрашивает сколько у пользователя валюты
 puts 'Сколько у Вас валюты?: '
 
-currency = gets.to_f.round(2)
+currency_on_hand = gets.to_f.round(2)
 
 # Спрашивает сколько у пользователя рублей
 puts 'Сколько у Вас рублей?: '
 
-rub = gets.to_f.round(2)
+rub_on_hand = gets.to_f.round(2)
 
 puts
 
 # Назначает полученные данные соответствующим ключам хэша параметров
-portfolio_params['course'] = course
-portfolio_params['currency'] = currency
-portfolio_params['rub'] = rub
-portfolio_params['symbol'] = CourseParser.return_valutes_symbol(selected_valute)
+portfolio_params[:course] = course
+portfolio_params[:currency] = currency_on_hand
+portfolio_params[:rub] = rub_on_hand
 
 # Передает классу Стабилизатор хэшш параметров
 stabilizer = Stabilizer.new(portfolio_params)
 
-puts stabilizer.result
-
-
+if stabilizer.result == :balanced
+  puts 'Ваша корзина и без того уравновешена.'
+elsif stabilizer.result == :sell
+  puts "Вам нужно продать: #{CourseParser::CURRENCY_SYMBOL[selected_currency]} #{stabilizer.amount}"
+else
+  puts "Вам нужно докупить: #{CourseParser::CURRENCY_SYMBOL[selected_currency]} #{stabilizer.amount}"
+end
