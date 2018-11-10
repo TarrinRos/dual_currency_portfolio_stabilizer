@@ -1,8 +1,8 @@
 class Stabilizer
-  attr_reader :result, :course, :currency, :rub, :amount
+  attr_reader :result, :rate, :currency, :rub, :amount
 
   def initialize(params)
-    @course = params[:course]
+    @rate = params[:rate]
     @currency = params[:currency]
     @rub = params[:rub]
     @amount = 0
@@ -12,7 +12,7 @@ class Stabilizer
 
   def count_buy_sell
     # Переводит рубли в валюту по курсу
-    rub_to_currency = @rub / @course
+    rub_to_currency = @rub / @rate
 
     # Считает сколько нужно продать долларов для уравновешивания корзины
     amount = (rub_to_currency + @currency) / 2 - rub_to_currency
